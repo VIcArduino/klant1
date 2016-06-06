@@ -1,0 +1,154 @@
+<script type="text/javascript"> 
+function stopRKey(evt) { 
+  var evt = (evt) ? evt : ((event) ? event : null); 
+  var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
+  if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
+} 
+document.onkeypress = stopRKey; 
+</script>
+
+<?php
+	define ("TITLE", "Klanteninvoer" );
+	include('includes/header.php');
+	include('includes/conn.php');		
+?>
+
+<html>
+<head>
+<link rel="stylesheet" href="css/pos.css">
+</head>
+	<div class="box1">	
+	<!--klant zoeken -->
+
+<div id ="zoek">
+	<form method="post" action="klantinvoer.php" id="zoek">		
+			<label for"zoek">Klant zoeken</label></br>
+			<input type="text" id="zoek" maxlength="10" size="10" autofocus name="zoek">			
+			<input type="submit" name="verder" value="verder">
+	</form>
+</div>
+</div>
+<?php
+if (isset($_POST['update'])){
+	$sqli = "UPDATE customer set name = '$_POST[name]',street = '$_POST[street]',
+	number = '$_POST[number]',zipcode = '$_POST[zipcode]',place = '$_POST[place]',
+	phone1 = '$_POST[phone1]',email = '$_POST[email]',jarig = '$_POST[jarig]',customernr = '$_POST[customernr]',
+	factname = '$_POST[factname]',factstreet = '$_POST[factstreet]',factnumber = '$_POST[factnumber]',
+	factzipcode = '$_POST[factzipcode]',factplace = '$_POST[factplace]',factphone = '$_POST[factphone]',
+	debtor = '$_POST[debtor]',factemail = '$_POST[factemail]' WHERE id = '$_POST[id]'";
+	$result = $db->query($sqli);
+	//$grp = $result->fetch_assoc();
+//	mysqli_query ($sqli, $db);
+echo "goed";
+}
+
+if (isset($_POST['delete'])){
+	$sqli = "DELETE FROM artikel WHERE id = '$_POST[id]'";
+
+	$result = $db->query($sqli);
+	//$grp = $result->fetch_assoc();
+//	mysqli_query ($sqli, $db);
+//echo "goed del";
+	}
+
+@$zoek = $_POST['zoek'];
+$sqli = "SELECT * FROM customer WHERE phone1 = '$zoek'";
+	$result = $db->query($sqli);
+		$naw = $result->fetch_assoc();
+		//print_r( $naw );
+	if ( $result->num_rows !=0){
+	//echo "Bestaat";
+	$tzb = "DELETE";	
+	$zb = "hidden";
+	$nzb = "";
+	}else {
+		//echo "Niets gevonden";
+		$zb = "";
+		$nzb = "hidden";
+		$tzb ="";
+		}
+		
+	function add_user( $name, $street, $number, $zipcode, $place, $phone1, $email, $jarig, $debtor, $factname, $factstreet, $factnumber, $factzipcode, $factplace, $factphone, $factemail, $customernr ) {	
+	global $db;
+	$result = $db->query( "INSERT INTO customer (name, street, number, zipcode, place, phone1, email, jarig, debtor,  factname, factstreet, factnumber, factzipcode, factplace, factphone, factemail, customernr) VALUES ('$name', '$street', '$number', '$zipcode', '$place', '$phone1', '$email', '$jarig','$debtor', '$factname', '$factstreet', '$factnumber', '$factzipcode', '$factplace', '$factphone', '$factemail', '$customernr')" );
+	return $result;	
+}
+
+if ( isset( $_POST['verwerk'] ) ) {
+	//echo $_POST['name'];
+	add_user( $_POST['name'], $_POST['street'], $_POST['number'], $_POST['zipcode'], $_POST['place'], $_POST['phone1'], $_POST['email'], $_POST['jarig'], $_POST['debtor'], $_POST['factname'], $_POST['factstreet'], $_POST['factnumber'], $_POST['factzipcode'], $_POST['factplace'], $_POST['factphone'], $_POST['factemail'], $_POST['customernr'] );		
+}
+
+?>
+	
+	<span>	
+		<form method="post">
+		<div class="box6">			
+			DEBITEUR<br>
+			<label for"customernr">Debiteurnr</label></br>
+			<input type="text" id="customernr" name="customernr"value="<?php echo $naw["customernr"];?>"></br>
+			
+			<label for"factname">Naam</label></br>
+			<input type="text" id="factname" name="factname" value="<?php echo $naw["factname"];?>"></br>
+			
+			<label for"factstreet">Straat</label></br>
+			<input type="text" id="factstreet" name="factstreet" value="<?php echo $naw["factstreet"];?>"></br>
+			
+			<label for"factnumber">Huisnummer</label></br>
+			<input type="text" id="factnumber" name="factnumber" value="<?php echo $naw["factnumber"];?>"></br>
+			
+			<label for"factzipcode">Postcode</label></br>
+			<input type="text" id="factzipcode" name="factzipcode" value="<?php echo $naw["factzipcode"];?>"></br>
+			
+			<label for"factplace">Woonplaats</label></br>
+			<input type="text" id="factplace" name="factplace" value="<?php echo $naw["factplace"];?>"></br>
+			
+			<label for"factphone">Telefoon</label></br> 
+			<input type="text" id="factphone" name="factphone"value="<?php echo $naw["factphone"];?>"></br> 
+			
+			<label for"factemail">E-mail adres</label></br>
+			<input type="text" id="factemail" name="factemail" value="<?php echo $naw["factemail"];?>"></br>
+			<label for"customernr">Debiteurnr</label></br>
+			<input type="text" id="customernr" name="customernr"value="<?php echo $naw["customernr"];?>"></br>
+	</div>	
+		
+		<div class="box6">			
+			<br>
+			<label for"id">klantID</label></br>
+			<input type="hidden" id="id" name="id" value="<?php echo $naw["id"];?>"></br>
+			
+			<label for"phone1">Telefoon</label></br>
+			<input type="text" id="phone1" name="phone1"value="<?php echo @$_POST["zoek"];?>"></br>
+			
+			<label for"name">Klant naam</label></br>
+			<input type="text" id="name" name="name" value="<?php echo $naw["name"];?>"></br>
+			
+			<label for"street">Straat</label></br>
+			<input type="text" id="street" name="street" value="<?php echo $naw["street"];?>"></br>
+			
+			<label for"number">Huisnummer</label></br>
+			<input type="text" id="number" name="number" value="<?php echo $naw["number"];?>"></br>
+			
+			<label for"zipcode">Postcode</label></br>
+			<input type="text" id="zipcode" name="zipcode" value="<?php echo $naw["zipcode"];?>"></br>
+			
+			<label for"place">Woonplaats</label></br>
+			<input type="text" id="place" name="place" value="<?php echo $naw["place"];?>"></br>
+			
+			<label for"email">E-mail adres</label></br>
+			<input type="text" id="email" name="email" value="<?php echo $naw["email"];?>"></br>
+			
+			<label for"jarig">Jarig op</label></br>
+			<input type="text" id="jarig" name="jarig" value="<?php echo $naw["jarig"];?>"></br>
+			
+			<input type="radio" name="debtor" value="ja"> Op Rekening</br>
+			<input type="radio" name="debtor" value="nee" checked> NIET Op Rekening</br></br>
+			
+			<input type="submit" <?php echo $zb ;?> name="verwerk" value="verwerk">  
+			<input type="submit" <?php echo $nzb ;?> name="update" value="update">
+			&nbsp; &nbsp; &nbsp;  <?php echo $tzb ;?> <input type="checkbox" <?php echo $nzb ;?> name="delete"  value="delete"></br>
+	
+		</div>
+		</form>
+	</span> 
+<?php include('includes/footer.php'); ?>	
