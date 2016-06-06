@@ -43,7 +43,7 @@ echo "goed";
 }
 
 if (isset($_POST['delete'])){
-	$sqli = "DELETE FROM artikel WHERE id = '$_POST[id]'";
+	$sqli = "DELETE FROM customer WHERE id = '$_POST[id]'";
 
 	$result = $db->query($sqli);
 	//$grp = $result->fetch_assoc();
